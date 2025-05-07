@@ -13,7 +13,7 @@ const AttendanceLog = () => {
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/attendance/logs');
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/attendance/logs`);
       const data = await res.json();
       setAttendanceLogs(data);
 

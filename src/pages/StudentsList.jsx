@@ -11,7 +11,7 @@ const StudentList = () => {
 
   const fetchStudents = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/students');
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students`);
       const data = await res.json();
       data.sort((a, b) => a.roll.localeCompare(b.roll, undefined, { numeric: true }));
 
@@ -24,7 +24,7 @@ const StudentList = () => {
 
   const deleteStudent = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/students/${id}`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/${id}`, {
         method: 'DELETE',
       });
       setStudents((prev) => prev.filter((s) => s._id !== id));

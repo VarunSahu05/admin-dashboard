@@ -36,7 +36,7 @@ const CreateSession = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/teachers/verify/${teacherId}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teachers/verify/${teacherId}`);
       if (!response.ok) {
         alert('Error verifying teacher');
         return;

@@ -34,7 +34,7 @@ const RegisterStudent = () => {
 
     try {
       // Make API request to backend to register student
-      const res = await fetch('http://localhost:5000/api/students/register', {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
