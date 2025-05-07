@@ -1,0 +1,44 @@
+.teacher-reg-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .teacher-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .teacher-form input {
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  .teacher-form button {
+    padding: 0.8rem;
+    font-size: 1rem;
+    background-color: #14ba1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .teacher-form button:hover {
+    background-color: #2dff37;
+    transform: scale(1.03);
+  }
+  
+  .success-message {
+    color: green;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  

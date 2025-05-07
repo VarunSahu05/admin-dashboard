@@ -1,0 +1,26 @@
+.teacher-container {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .teacher-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .teacher-card {
+    background-color: #21ecec;
+    border: 2px solid #ccc;
+    padding: 2rem;
+    width: 200px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .teacher-card:hover {
+    transform: scale(1.05);
+    background-color: #48cce3;
+  }

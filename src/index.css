@@ -1,0 +1,13 @@
+/* Reset default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Roboto;
+  background-color: #f4f6f8;
+  color: #333;
+  line-height: 1.6;
+}

@@ -1,0 +1,24 @@
+.home-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+  }
+  
+  .card {
+    background: #00bcd4;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .card:hover {
+    background: #0288a7;
+    transform: scale(1.03);
+  }
+  

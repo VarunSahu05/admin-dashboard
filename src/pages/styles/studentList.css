@@ -1,0 +1,67 @@
+.view-container {
+    padding: 2rem;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .filter-container {
+    margin-bottom: 1rem;
+  }
+  
+  .filter-container select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+  }
+  
+  .student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .student-table th,
+  .student-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+  }
+  
+  .student-table th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .student-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .student-table tr:hover {
+    background-color: none;
+  }
+  
+  .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c0392b;
+  }
+  
+
+  .filter-dropdown {
+    margin: 1rem 0;
+  }
+  
+  .filter-dropdown select {
+    padding: 0.4rem 0.6rem;
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
