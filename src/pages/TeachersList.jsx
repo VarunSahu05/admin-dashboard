@@ -9,7 +9,7 @@ const TeachersList = () => {
 
   const fetchTeachers = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/teachers');
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teachers`);
       const data = await res.json();
       data.sort((a, b) => a.teacherId.localeCompare(b.teacherId, undefined, { numeric: true }));
       setTeachers(data);
@@ -20,7 +20,7 @@ const TeachersList = () => {
 
   const deleteTeacher = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/teachers/${id}`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teachers/${id}`, {
         method: 'DELETE',
       });
       setTeachers((prev) => prev.filter((t) => t._id !== id));
