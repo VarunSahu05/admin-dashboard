@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/ViewTable.css';
-import './styles/StudentList.css';
+import './styles/studentList.css';
 
 const StudentList = () => {
   const navigate = useNavigate();
