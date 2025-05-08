@@ -71,9 +71,8 @@ const CreateSession = () => {
     }
   };
 
-  const generateQrCode = (teacherId, subject, sessionId, department) => {
-    const timestamp = Date.now();
-    const date = new Date(timestamp).toLocaleDateString('en-GB');
+  const generateQrCode = (teacherId, subject, sessionId, department, date, timestamp) => {
+
     const qrData = {
       teacherId,
       subject,     // ✅ Ensure subject is added
@@ -103,14 +102,17 @@ const CreateSession = () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/attendance/count/${sessionId}`);
         const data = await res.json();
-        setScannedCount(data.count);
+      // Check if all students have been scanned
+      if (totalStudents > 0 && data.count >= totalStudents) {
+        stopSession();
+        return;
+      }
 
-        if (totalStudents > 0 && data.count >= totalStudents) {
-          stopSession();
-        } else if (data.count > scannedCount) {
-          generateQrCode(teacherId, subject, sessionId, department, date, timestamp); // only refresh QR if new scan happened
-        }
-
+      // Refresh QR code only if a new scan is detected
+      if (data.count > scannedCount) {
+        setScannedCount(data.count); // Update the scanned count
+        generateQrCode(teacherId, subject, sessionId, department, date, timestamp);
+      }
       } catch (err) {
         console.error('Polling error:', err);
       }
