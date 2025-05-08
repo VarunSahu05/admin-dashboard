@@ -49,7 +49,11 @@ const CreateSession = () => {
         // Get total students in department
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/count/${department}`);
         const studentData = await res.json();
-        setTotalStudents(studentData.count || 0);
+        if (!studentData.count) {
+          alert('No students registered in this department.');
+          return;
+        }
+        setTotalStudents(studentData.count);
 
         startQrSession({
           teacherId,
@@ -98,12 +102,12 @@ const CreateSession = () => {
         const data = await res.json();
         setScannedCount(data.count);
 
-        if (data.count >= totalStudents) {
+        if (totalStudents > 0 && data.count >= totalStudents) {
           stopSession();
-        } else {
-          // Refresh QR only after successful scan (new scan happened)
-          generateQrCode();
+        } else if (data.count > scannedCount) {
+          generateQrCode(); // only refresh QR if new scan happened
         }
+
       } catch (err) {
         console.error('Polling error:', err);
       }
