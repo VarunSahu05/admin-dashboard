@@ -102,8 +102,11 @@ const CreateSession = () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/attendance/count/${sessionId}`);
         const data = await res.json();
+        console.log('Polling data:', data); // Debugging
+
       // Check if all students have been scanned
-      if (totalStudents > 0 && data.count >= totalStudents) {
+      if (totalStudents > 0 && data.count == totalStudents) {
+        console.log('All students scanned. Stopping session.'); // Debugging
         stopSession();
         return;
       }
