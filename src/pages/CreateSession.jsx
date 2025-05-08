@@ -87,7 +87,7 @@ const CreateSession = () => {
   };
 
   const startQrSession = ({ teacherId, subject, sessionId, department, date, timestamp }) => {
-
+    timestamp = Date.now();
     generateQrCode( teacherId, subject, sessionId, department, date, timestamp);
     setShowQR(true);
     setExpired(false);
@@ -107,7 +107,7 @@ const CreateSession = () => {
         console.log('Polling data:', data); // Debugging
 
       // Check if all students have been scanned
-      if (totalStudents > 0 && data.count >= totalStudents) {
+      if (totalStudents > 0 && data.count == totalStudents) {
         console.log('All students scanned. Stopping session.'); // Debugging
         stopSession();
         return;
