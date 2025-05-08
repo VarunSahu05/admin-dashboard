@@ -86,11 +86,9 @@ const CreateSession = () => {
     setQrUrl(qrImageUrl);
   };
 
-  const startQrSession = ({ teacherId, subject, sessionId, department }) => {
-    const timestamp = Date.now();
-    const date = new Date(timestamp).toLocaleDateString('en-GB');
+  const startQrSession = ({ teacherId, subject, sessionId, department, date, timestamp }) => {
 
-    generateQrCode( teacherId, subject, sessionId, department);
+    generateQrCode( teacherId, subject, sessionId, department, date, timestamp);
     setShowQR(true);
     setExpired(false);
 
