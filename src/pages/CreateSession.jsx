@@ -88,6 +88,9 @@ const CreateSession = () => {
   };
 
   const startQrSession = ({ teacherId, subject, sessionId, department }) => {
+    const timestamp = Date.now();
+    const date = new Date(timestamp).toLocaleDateString('en-GB');
+
     generateQrCode( teacherId, subject, sessionId, department);
     setShowQR(true);
     setExpired(false);
@@ -105,7 +108,7 @@ const CreateSession = () => {
         if (totalStudents > 0 && data.count >= totalStudents) {
           stopSession();
         } else if (data.count > scannedCount) {
-          generateQrCode(); // only refresh QR if new scan happened
+          generateQrCode(teacherId, subject, sessionId, department, date, timestamp); // only refresh QR if new scan happened
         }
 
       } catch (err) {
