@@ -43,8 +43,9 @@ const CreateSession = () => {
       if (data.valid) {
         const rand = Math.floor(10000 + Math.random() * 90000);
         const newSessionId = `${department}-${rand}`;
+        const newSubject = data.subject;
         setSessionId(newSessionId);
-        setSubject(data.subject);
+        setSubject(newSubject);
 
         // Get total students in department
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/count/${department}`);
@@ -57,7 +58,7 @@ const CreateSession = () => {
 
         startQrSession({
           teacherId,
-          subject: data.subject,
+          subject: newSubject,
           sessionId: newSessionId,
           department,
         });
@@ -86,9 +87,8 @@ const CreateSession = () => {
     setQrUrl(qrImageUrl);
   };
 
-  // eslint-disable-next-line no-unused-vars
   const startQrSession = ({ teacherId, subject, sessionId, department }) => {
-    generateQrCode();
+    generateQrCode( teacherId, subject, sessionId, department);
     setShowQR(true);
     setExpired(false);
 
