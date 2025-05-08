@@ -71,7 +71,7 @@ const CreateSession = () => {
     }
   };
 
-  const generateQrCode = () => {
+  const generateQrCode = (teacherId, subject, sessionId, department) => {
     const timestamp = Date.now();
     const date = new Date(timestamp).toLocaleDateString('en-GB');
     const qrData = {
