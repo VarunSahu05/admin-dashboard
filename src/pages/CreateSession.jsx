@@ -75,8 +75,8 @@ const CreateSession = () => {
     const date = new Date(timestamp).toLocaleDateString('en-GB');
     const qrData = {
       teacherId,
-      subject,
-      sessionId,
+      subject,     // ✅ Ensure subject is added
+      sessionId,   // ✅ Ensure sessionId is added
       department,
       date,
       timestamp,
@@ -85,7 +85,7 @@ const CreateSession = () => {
     const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrString)}`;
     setQrUrl(qrImageUrl);
   };
-
+  
   // eslint-disable-next-line no-unused-vars
   const startQrSession = ({ teacherId, subject, sessionId, department }) => {
     generateQrCode();
