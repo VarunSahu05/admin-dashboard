@@ -116,8 +116,12 @@ const CreateSession = () => {
         stopSession();
         return;
       }
-      const newTimestamp = Date.now();
-      generateQrCode(teacherId, subject, sessionId, department, date, newTimestamp);
+
+      // Refresh QR code only if a new scan is detected
+      if (data.count > scannedCount) {
+        const newTimestamp = Date.now();
+        generateQrCode(teacherId, subject, sessionId, department, date, newTimestamp);
+      }
 
       } catch (err) {
         console.error('Polling error:', err);
