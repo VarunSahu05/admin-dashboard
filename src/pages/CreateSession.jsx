@@ -111,14 +111,15 @@ const CreateSession = () => {
 
 
       // Check if all students have been scanned
-      if (totalStudents > 0 && data.count >= totalStudents) {
+      if (totalStudents > 0 && data.count === totalStudents) {
         console.log('All students scanned. Stopping session.'); // Debugging
-        stopSession();
+        stopSession(1000);
         return;
       }
 
       // Refresh QR code only if a new scan is detected
       if (data.count > scannedCount) {
+        setScannedCount(data.count); // Update the scanned count
         const newTimestamp = Date.now();
         generateQrCode(teacherId, subject, sessionId, department, date, newTimestamp);
       }
