@@ -90,7 +90,7 @@ const CreateSession = () => {
 
     expirationRef.current = setTimeout(() => {
       stopSession();
-    }, 2 * 60 * 1000); // 2 minutes
+    }, 180000); //3 minutes
 
     pollRef.current = setInterval(async () => {
       try {
