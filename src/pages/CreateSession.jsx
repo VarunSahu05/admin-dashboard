@@ -13,11 +13,12 @@ const CreateSession = () => {
   const [showQR, setShowQR] = useState(false);
   const [expired, setExpired] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [scannedCount, setScannedCount] = useState(0);
 
-  const intervalRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const expirationRef = useRef(null);
+  const pollRef = useRef(null);
 
-  // Set current date on mount
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toLocaleDateString('en-GB', {
@@ -28,7 +29,6 @@ const CreateSession = () => {
     setCurrentDate(formattedDate);
   }, []);
 
-  // Generate session ID
   const generateSessionId = async () => {
     if (!teacherId || !department) {
       alert('All fields are required');
@@ -37,82 +37,99 @@ const CreateSession = () => {
 
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teachers/verify/${teacherId}`);
-      if (!response.ok) {
-        alert('Error verifying teacher');
-        return;
-      }
-
+      if (!response.ok) throw new Error('Teacher verification failed');
       const data = await response.json();
+
       if (data.valid) {
-        const subjectFromDB = data.subject;
         const rand = Math.floor(10000 + Math.random() * 90000);
         const newSessionId = `${department}-${rand}`;
-
-        setSubject(subjectFromDB);
         setSessionId(newSessionId);
+        setSubject(data.subject);
+
+        // Get total students in department
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/count/${department}`);
+        const studentData = await res.json();
+        setTotalStudents(studentData.count || 0);
 
         startQrSession({
           teacherId,
-          subject: subjectFromDB,
+          subject: data.subject,
           sessionId: newSessionId,
           department,
         });
       } else {
-        alert('Teacher not found or not valid');
+        alert('Invalid teacher');
       }
     } catch (error) {
-      console.error('Error verifying teacher:', error);
-      alert('Error verifying teacher. Please try again.');
+      console.error('Error:', error);
+      alert('Failed to generate session');
     }
   };
 
-  // Start QR session
-  const startQrSession = ({ teacherId, subject, sessionId, department }) => {
-    clearInterval(intervalRef.current);
-    clearTimeout(timeoutRef.current);
-
-    const generateQr = () => {
-      const timestamp = Date.now();
-      const date = new Date(timestamp).toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      });
-      const dynamicData = JSON.stringify({
-        teacherId,
-        subject,
-        sessionId,
-        department,
-        date,
-        timestamp,
-      });
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(dynamicData)}`;
-      setQrUrl(qrApiUrl);
+  const generateQrCode = () => {
+    const timestamp = Date.now();
+    const date = new Date(timestamp).toLocaleDateString('en-GB');
+    const qrData = {
+      teacherId,
+      subject,
+      sessionId,
+      department,
+      date,
+      timestamp,
     };
+    const qrString = JSON.stringify(qrData);
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrString)}`;
+    setQrUrl(qrImageUrl);
+  };
 
-    generateQr();
+  // eslint-disable-next-line no-unused-vars
+  const startQrSession = ({ teacherId, subject, sessionId, department }) => {
+    generateQrCode();
     setShowQR(true);
     setExpired(false);
 
-    intervalRef.current = setInterval(generateQr, 10000);
+    expirationRef.current = setTimeout(() => {
+      stopSession();
+    }, 2 * 60 * 1000); // 2 minutes
 
-    timeoutRef.current = setTimeout(() => {
-      clearInterval(intervalRef.current);
-      setShowQR(false);
-      setExpired(true);
-      setTimeout(() => {
-        setExpired(false);
-        resetForm();
-      }, 5000);
-    }, 120000);
+    pollRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/attendance/count/${sessionId}`);
+        const data = await res.json();
+        setScannedCount(data.count);
+
+        if (data.count >= totalStudents) {
+          stopSession();
+        } else {
+          // Refresh QR only after successful scan (new scan happened)
+          generateQrCode();
+        }
+      } catch (err) {
+        console.error('Polling error:', err);
+      }
+    }, 5000); // check every 5s
   };
 
-  // Reset the form
+  const stopSession = () => {
+    clearTimeout(expirationRef.current);
+    clearInterval(pollRef.current);
+    setShowQR(false);
+    setExpired(true);
+
+    setTimeout(() => {
+      resetForm();
+      setExpired(false);
+    }, 5000);
+  };
+
   const resetForm = () => {
     setTeacherId('');
     setSubject('');
     setDepartment('');
     setSessionId('');
+    setQrUrl('');
+    setScannedCount(0);
+    setTotalStudents(0);
   };
 
   return (
@@ -127,12 +144,7 @@ const CreateSession = () => {
             value={teacherId}
             onChange={(e) => setTeacherId(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Subject"
-            value={subject}
-            readOnly
-          />
+          <input type="text" placeholder="Subject" value={subject} readOnly />
           <input type="text" placeholder="Session ID" value={sessionId} readOnly />
           <select value={department} onChange={(e) => setDepartment(e.target.value)}>
             <option value="">Select Department</option>
@@ -146,7 +158,11 @@ const CreateSession = () => {
         {showQR && (
           <div className="qr-box">
             <img src={qrUrl} alt="QR Code" />
-            <p>QR updates every 10s. Session ends in 2 min.</p>
+            <p>
+              {scannedCount}/{totalStudents} students marked.
+              <br />
+              QR updates only after each scan.
+            </p>
           </div>
         )}
 
@@ -163,7 +179,7 @@ const CreateSession = () => {
             border: 'none',
             padding: '0.7rem 1.1rem',
             borderRadius: '4px',
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           Back
