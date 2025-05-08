@@ -86,9 +86,10 @@ const CreateSession = () => {
     setQrUrl(qrImageUrl);
   };
 
-  const startQrSession = ({ teacherId, subject, sessionId, department, date, timestamp }) => {
-    timestamp = Date.now();
-    generateQrCode( teacherId, subject, sessionId, department, date, timestamp);
+  const startQrSession = ({ teacherId, subject, sessionId, department }) => {
+    const date = currentDate;
+    const timestamp = Date.now();
+   generateQrCode( teacherId, subject, sessionId, department, date, timestamp);
     setShowQR(true);
     setExpired(false);
 
@@ -106,18 +107,18 @@ const CreateSession = () => {
         const data = await res.json();
         console.log('Polling data:', data); // Debugging
 
+        setScannedCount(data.count);
+
+
       // Check if all students have been scanned
-      if (totalStudents > 0 && data.count == totalStudents) {
+      if (totalStudents > 0 && data.count >= totalStudents) {
         console.log('All students scanned. Stopping session.'); // Debugging
         stopSession();
         return;
       }
+      const newTimestamp = Date.now();
+      generateQrCode(teacherId, subject, sessionId, department, date, newTimestamp);
 
-      // Refresh QR code only if a new scan is detected
-      if (data.count > scannedCount) {
-        setScannedCount(data.count); // Update the scanned count
-        generateQrCode(teacherId, subject, sessionId, department, date, timestamp);
-      }
       } catch (err) {
         console.error('Polling error:', err);
       }
